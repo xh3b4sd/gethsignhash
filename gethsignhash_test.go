@@ -1,13 +1,16 @@
 package gethsignhash
 
 import (
+	"crypto/ecdsa"
 	"fmt"
 	"testing"
 
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/google/go-cmp/cmp"
 )
 
-func Test_GethSignHash(t *testing.T) {
+func Test_GethSignHash_HashMessage(t *testing.T) {
 	testCases := []struct {
 		byt [][]byte
 		has string
@@ -70,10 +73,56 @@ func Test_GethSignHash(t *testing.T) {
 
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
-			has := GethSignHash(tc.byt...).String()
+			has := HashMessage(tc.byt...).String()
 
-			if tc.has != has {
+			if has != tc.has {
 				t.Fatalf("\n\n%s\n", cmp.Diff(tc.has, has))
+			}
+		})
+	}
+}
+
+func Test_GethSignHash_SignHash(t *testing.T) {
+	testCases := []struct {
+		has string
+		pri string
+		sig string
+	}{
+		// Case 000
+		{
+			has: "0x4d84bf5afe05dff160c24b8f734d46a6260d39c21d4551bfa406baf9419aff53",
+			pri: "fe5e321af0d82edab25abed54f841e575953465e42ce7a51e2008f8807c5582b",
+			sig: "0x063e956331f6b03a51aef0e7ac4065ab9e7339b943535a0a1458953436478d995ebabbcfe29b6f93c02ee9fda5954a6290469b758e0df0a08c1c47a630cd6d391c",
+		},
+	}
+
+	for i, tc := range testCases {
+		t.Run(fmt.Sprintf("%03d", i), func(t *testing.T) {
+			var err error
+
+			var has []byte
+			{
+				has = common.HexToHash(tc.has).Bytes()
+			}
+
+			var key *ecdsa.PrivateKey
+			{
+				key, err = crypto.HexToECDSA(tc.pri)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+
+			var sig []byte
+			{
+				sig, err = SignHash(has, key)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+
+			if string(sig) != tc.sig {
+				t.Fatalf("\n\n%s\n", cmp.Diff(tc.sig, sig))
 			}
 		})
 	}
