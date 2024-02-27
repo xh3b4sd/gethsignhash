@@ -15,7 +15,7 @@ func AddressToBytes(a string) []byte {
 	return common.HexToAddress(a).Bytes()
 }
 
-func GethSignHash(byt ...[]byte) common.Hash {
+func HashMessage(byt ...[]byte) common.Hash {
 	return hash(mess(byt...))
 }
 
@@ -23,7 +23,7 @@ func IntToBytes(i int) []byte {
 	return common.LeftPadBytes(big.NewInt(int64(i)).Bytes(), 32)
 }
 
-func NewSignature(has []byte, pri *ecdsa.PrivateKey) ([]byte, error) {
+func SignHash(has []byte, pri *ecdsa.PrivateKey) ([]byte, error) {
 	var err error
 
 	var sig []byte

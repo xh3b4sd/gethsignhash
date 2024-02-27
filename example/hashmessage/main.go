@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	fmt.Println(gethsignhash.GethSignHash(
+	fmt.Println(gethsignhash.HashMessage(
 		gethsignhash.IntToBytes(7),
 		gethsignhash.StringToBytes(":"),
 		gethsignhash.IntToBytes(1),

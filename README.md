@@ -1,10 +1,10 @@
 # gethsignhash
 
-This package provides `gethsignhash.NewSignature` to generate signed messages in
+This package provides `gethsignhash.SignHash` to generate signed messages in
 Golang that can be verified with [OpenZeppelin.ECDSA] in Solidity.
 
 ```go
-func NewSignature(has []byte, pri *ecdsa.PrivateKey) ([]byte, error)
+func SignHash(has []byte, pri *ecdsa.PrivateKey) ([]byte, error)
 ```
 
 ```go
@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	fmt.Println(gethsignhash.GethSignHash(
+	fmt.Println(gethsignhash.HashMessage(
 		gethsignhash.IntToBytes(7),
 		gethsignhash.StringToBytes(":"),
 		gethsignhash.IntToBytes(1),
@@ -30,7 +30,7 @@ func main() {
 ```
 
 ```
-% go run example/main.go
+% go run example/hashmessage/main.go
 0x4d84bf5afe05dff160c24b8f734d46a6260d39c21d4551bfa406baf9419aff53
 ```
 
